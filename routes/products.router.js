@@ -1,76 +1,110 @@
-
-const express = require("express");
-const { faker } = require("@faker-js/faker");
-
+const express = require('express');
+const ProductService = require('../services/product.service');
 const router = express.Router();
+const service = new ProductService();
 
-router.get("/", (req, res) => {
-  const products = [];
-  const { size } = req.query;
-  const limit = size || 10;
-  for (let i = 0; i < limit; i++) {
-    products.push({
-      id: faker.number.int({ min: 1, max: 100 }),
-      name: faker.commerce.productName(),
-      price: faker.number.int({ min: 100, max: 1000 }),
-      image: faker.image.url()
-    });
-  }
-  res.json(products);
-});
 
-router.get("/filter", (req, res) => {
-  res.send('Yo soy un filter')
-});
 
-router.get("/:id", (req, res) => {
-  const { id } = req.params;
-  const product = data.products.find(product => product.id === parseInt(id));
-  if (product) {
-    res.json(product);
-  } else {
-    res.status(404).send("Product not found");
-  }
-});
-
-router.post("/", (req, res) => {
-  const body = req.body;
-  console.log(body);
-
-  const newProduct = {
-    id: faker.number.int({ min: 1, max: 100 }),
-    ...body
-  }
-  res.status(201).json({
-    message: "Product created",
-    data: newProduct
+router.get('/', (req, res) => {
+  const products = service.find();
+  res.json({
+    total: products.length,
+    message: 'Products found',
+    data: products,
   });
 });
 
+/* router.get('/filter', (req, res) => {
+  res.send('Yo soy un filter');
+}); */
 
-router.put("/:id", (req, res) => {
-  const productId = req.params.id;
-  const updatedProduct = req.body;
-  const productIndex = data.products.findIndex(product => product.id === parseInt(productId));
-  if (productIndex !== -1) {
-    data.products[productIndex] = updatedProduct;
-    res.json(updatedProduct);
-  } else {
-    res.status(404).send("Product not found");
+router.get('/:id', (req, res) => {
+  const { id } = req.params;
+  const product = service.findOne(id);
+
+  if (!product) {
+    return res.status(404).send({
+      message: 'Product not found',
+    });
   }
+
+  res.json({
+    message: 'Product found',
+    data: product,
+  });
 });
 
-router.delete("/:id", (req, res) => {
+router.post('/', (req, res) => {
+  const body = req.body;
+  const product = service.create(body);
+
+  if (!product) {
+    return res.status(400).send({
+      message: 'Product not created',
+    });
+  }
+  res.json({
+    message: 'Product created',
+    data: product,
+  });
+});
+
+router.put('/:id', (req, res) => {
+  const { id } = req.params;
+  const body = req.body;
+  const product = service.update(id, body);
+  res.json({
+    message: 'Product updated',
+    data: product,
+  });
+});
+
+router.delete('/:id', (req, res) => {
   const productId = req.params.id;
-  const productIndex = data.products.findIndex(product => product.id === parseInt(productId));
+  const productIndex = data.products.findIndex(
+    (product) => product.id === parseInt(productId),
+  );
   if (productIndex !== -1) {
     data.products.splice(productIndex, 1);
-    res.sendStatus(204);
+    // res.sendStatus(204);
+    res.json({
+      message: 'Product deleted',
+      data: data.products,
+    });
   } else {
-    res.status(404).send("Product not found");
+    res.status(404).send('Product not found');
   }
 });
 
+router.patch('/:id', (req, res) => {
+  const { id } = req.params;
+  const body = req.body;
+  res.json({
+    message: 'Product updated',
+    data: {
+      ...body,
+    },
+    id,
+  });
+});
+
+/* router.patch('/:id', (req, res) => {
+  const { id } = req.params;
+  const body = req.body;
+
+  const productIndex = data.products.findIndex(
+    (product) => product.id === parseInt(id),
+  );
+  if (productIndex !== -1) {
+    const product = data.products[productIndex];
+    data.products[productIndex] = {
+      ...product,
+      ...body,
+    };
+    res.json(data.products[productIndex]);
+  } else {
+    res.status(404).send('Product not found');
+  }
+}); */
 
 module.exports = router;
-
