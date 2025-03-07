@@ -21,9 +21,13 @@ class ProductService {
     }
   }
 
-  create( product) {
-    this.products.push(product);
-    return product;
+  create( product ) {
+    const newProduct = {
+      id: simpleFaker.string.uuid(),
+      ...product,
+    }
+    this.products.push(newProduct);
+    return newProduct;
   }
 
   find() {
@@ -34,9 +38,26 @@ class ProductService {
     return this.products.find((product) => product.id === id);
   }
 
-  update( id ) {
+  update( id, changes ) {
+
+    const index = this.products.findIndex((product) => product.id === id);
+    if (index === -1) {
+      throw new Error('Product not found');
+    }
+
+    const prevProduct = this.products[index];
+    this.products[index] = {
+      ...prevProduct,
+      ...changes,
+    };
+
+  }
+
+  /* update( id ) {
 
     return this.products.map((product) => {
+      console.log(product);
+
       if (product.id === id) {
         return {
           ...product,
@@ -46,9 +67,15 @@ class ProductService {
       return product;
     });
 
-  }
+  } */
 
-  delete() {}
+  delete(id) {
+    const index = this.products.findIndex((product) => product.id === id);
+    if (index === -1) {
+      throw new Error('Product not found');
+    }
+    this.products.splice(index, 1);
+  }
 }
 
 module.exports = ProductService;

@@ -49,6 +49,18 @@ router.post('/', (req, res) => {
   });
 });
 
+router.patch('/:id', (req, res) => {
+  const { id } = req.params;
+  const body = service.update(id, req.body);
+  res.json({
+    message: 'Product updated',
+    data: {
+      ...body,
+    },
+    id,
+  });
+});
+
 router.put('/:id', (req, res) => {
   const { id } = req.params;
   const body = req.body;
@@ -60,33 +72,15 @@ router.put('/:id', (req, res) => {
 });
 
 router.delete('/:id', (req, res) => {
-  const productId = req.params.id;
-  const productIndex = data.products.findIndex(
-    (product) => product.id === parseInt(productId),
-  );
-  if (productIndex !== -1) {
-    data.products.splice(productIndex, 1);
-    // res.sendStatus(204);
-    res.json({
-      message: 'Product deleted',
-      data: data.products,
-    });
-  } else {
-    res.status(404).send('Product not found');
-  }
-});
-
-router.patch('/:id', (req, res) => {
   const { id } = req.params;
-  const body = req.body;
+  service.delete(id);
   res.json({
-    message: 'Product updated',
-    data: {
-      ...body,
-    },
+    message: 'Product deleted',
     id,
   });
 });
+
+
 
 /* router.patch('/:id', (req, res) => {
   const { id } = req.params;
