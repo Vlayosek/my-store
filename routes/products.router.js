@@ -3,7 +3,6 @@ const ProductsService = require("../services/product.service");
 const validatorHandler = require("../middlewares/validator.handler");
 const { createProductSchema, updateProductSchema, getProductSchema } = require("../schemas/product.schema");
 const router = express.Router();
-
 const service = new ProductsService();
 
 router.get("/", async (req, res) => {
@@ -80,4 +79,3 @@ router.delete("/:id",
 });
 
 module.exports = router;
-
