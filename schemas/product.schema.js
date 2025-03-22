@@ -9,14 +9,14 @@ const isBlocked = joi.boolean();
 const createProductSchema = joi.object({
   name: name.required(),
   price: price.required(),
-  // image: image.required(),
+  image: image.required(),
   // isBlocked: isBlocked.required(),
 });
 
 const updateProductSchema = joi.object({
   name: name,
   price: price,
-  // image: image,
+  image: image,
   // isBlocked: isBlocked,
 });
 
