@@ -9,7 +9,7 @@ const port = process.env.PORT || 3000;
 
 app.use(express.json());
 
-const whitelist = ['http://localhost:8080', 'https://my-store-gamma-six.vercel.app'];
+/*const whitelist = ['http://localhost:8080', 'https://my-store-gamma-six.vercel.app'];
 const options = {
   origin: (origin, callback) => {
     if (whitelist.includes(origin)) {
@@ -19,7 +19,7 @@ const options = {
     }
   }
 }
-app.use(cors(options));
+app.use(cors(options));*/
 
 routerApi(app);
 
